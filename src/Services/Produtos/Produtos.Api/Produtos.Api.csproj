@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Produtos\Queries\" />
+    <Folder Include="Produtos\ViewModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Produtos.Application\Produtos.Application.csproj" />
+    <ProjectReference Include="..\Produtos.Infra.CrossCutting.IoC\Produtos.Infra.CrossCutting.IoC.csproj" />
+  </ItemGroup>
+
+
+</Project>
