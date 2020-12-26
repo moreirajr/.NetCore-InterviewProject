@@ -40,7 +40,7 @@ namespace Produtos.Infra.Data.Repositories
             if (!string.IsNullOrEmpty(nome))
                 query = query.Where(x => x.Nome.Contains(nome));
 
-            return await query.ToListAsync();
+            return await query.Include(x => x.Imagens).ToListAsync();
         }
 
         public Produto AtualizarProduto(Produto produto)

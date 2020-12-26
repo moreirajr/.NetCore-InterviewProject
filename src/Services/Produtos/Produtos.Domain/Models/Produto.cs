@@ -9,7 +9,7 @@ namespace Produtos.Domain.Models
         public Guid Id { get; set; }
         public string Nome { get; set; }
         public decimal Valor { get; set; }
-        public virtual ICollection<Imagem> Imagens { get; set; }
+        public ICollection<Imagem> Imagens { get; set; }
 
         public Produto() 
         {

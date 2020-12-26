@@ -43,7 +43,7 @@ namespace Produtos.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PesquisarProduto(string nome)
         {
-            var result = await _produtoAppService.PesquisarProdutos(nome);
+            var result = await _produtoAppService.PesquisarProdutos(nome);     
 
             if (result == null) return NotFound("Nenhum resultado encontrado.");
             return Ok(result);
@@ -81,7 +81,7 @@ namespace Produtos.Api.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("{id}/imagens/{idImagem}")]
+        [Route("{id}/imagem/{idImagem}")]
         public async Task<IActionResult> ImagensProduto(Guid id, long idImagem)
         {
             if (id == null || id == Guid.Empty) return BadRequest("Id inválido");

@@ -7,13 +7,12 @@ namespace Produtos.Infra.CrossCutting.Files
 {
     public class FileService : IFileService
     {
-        private readonly string _path;
         public FileService(string path)
         {
-            _path = string.IsNullOrEmpty(path) ? throw new ArgumentNullException("Caminho inválido") : path;
+            CurrentPath = string.IsNullOrEmpty(path) ? throw new ArgumentNullException("Caminho inválido") : path;
         }
 
-        public string CurrentPath => _path;
+        public string CurrentPath { get; }
 
         private void CreateDirectoryIfNotExists(string path)
         {
@@ -23,7 +22,7 @@ namespace Produtos.Infra.CrossCutting.Files
 
         public void SaveFile(string fileContent, string folder, string fileName)
         {
-            var path = Path.Combine(_path, folder);
+            var path = Path.Combine(CurrentPath, folder);
             CreateDirectoryIfNotExists(path);
 
             File.WriteAllText($"{path}\\{fileName}", fileContent);
@@ -31,7 +30,7 @@ namespace Produtos.Infra.CrossCutting.Files
 
         public async Task SaveFileAsync(IFormFile formFile, string folder, string identifier)
         {
-            using (var stream = new FileStream($"{_path}\\{folder}\\{identifier}_{formFile.FileName}", FileMode.Create))
+            using (var stream = new FileStream($"{CurrentPath}\\{folder}\\{identifier}_{formFile.FileName}", FileMode.Create))
             {
                 await formFile.CopyToAsync(stream);
             }
@@ -39,7 +38,7 @@ namespace Produtos.Infra.CrossCutting.Files
 
         public FileStream ReadFile(string folder, string fileName)
         {
-            return File.OpenRead($"{_path}\\{folder}\\{fileName}");
+            return File.OpenRead($"{CurrentPath}\\{folder}\\{fileName}");
         }
     }
 }

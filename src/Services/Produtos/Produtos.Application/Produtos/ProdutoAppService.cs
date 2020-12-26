@@ -16,10 +16,13 @@ namespace Produtos.Application.Produtos
         private readonly IProdutoService _produtoService;
         private readonly IFileService _fileService;
         private const string _imgsFolder = "produtos-imgs";
-        public ProdutoAppService(IProdutoService produtoService, IFileService fileService)
+        private const string _imgsApi = "api/v1/produto/{id}/imagem/{idImagem}";
+        private readonly string _host;
+        public ProdutoAppService(IProdutoService produtoService, IFileService fileService, string host)
         {
             _produtoService = produtoService;
             _fileService = fileService;
+            _host = host;
         }
 
         public async Task<ProdutoCadastradoViewModel> CadastrarProduto(CreateProdutoCommand command)
@@ -43,6 +46,11 @@ namespace Produtos.Application.Produtos
             return viewModelResult;
         }
 
+        private string ImgUrl(Guid idProduto, long idImagem)
+        {
+            return _imgsApi.Replace("{id}", idProduto.ToString()).Replace("{idImagem}", idImagem.ToString());
+        }
+
         public async Task<IEnumerable<ProdutoViewModel>> PesquisarProdutos(string nome)
         {
             var result = await _produtoService.PesquisarProdutos(nome);
@@ -50,7 +58,7 @@ namespace Produtos.Application.Produtos
             return result.Select(x => new ProdutoViewModel()
             {
                 Id = x.Id,
-                Imagens = x.Imagens.Select(y => y.Nome),
+                Imagens = x.Imagens.Select(y => $"{_host}/{ImgUrl(y.ProdutoId, y.Id)}"),
                 Nome = x.Nome,
                 Valor = x.Valor
             });
@@ -93,13 +101,11 @@ namespace Produtos.Application.Produtos
         public async Task<FileStream> ImagemProduto(Guid produtoId, long idImagem)
         {
             FileStream result = null;
-            ImagemViewModel file = null;
-
             var imagem = await _produtoService.GetProdutoImagemById(produtoId, idImagem);
 
             if (imagem != null)
             {
-                file = new ImagemViewModel()
+                ImagemViewModel file = new ImagemViewModel()
                 {
                     Id = imagem.Id,
                     ProdutoId = imagem.ProdutoId,

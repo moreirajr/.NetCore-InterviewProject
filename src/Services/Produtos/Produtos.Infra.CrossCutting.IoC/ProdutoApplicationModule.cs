@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Produtos.Application.Produtos;
 using Produtos.Application.Produtos.Interfaces;
 using Produtos.Domain.Interfaces;
@@ -12,7 +13,7 @@ namespace Produtos.Infra.CrossCutting.IoC
 {
     public static class ProdutoApplicationModule
     {
-        public static IServiceCollection ConfigureDependencies(this IServiceCollection services)
+        public static IServiceCollection ConfigureDependencies(this IServiceCollection services, IConfiguration configuration)
         {
             //create factory
             services.AddScoped(typeof(IProdutoLog<>), typeof(ProdutoLog<>));
@@ -24,7 +25,11 @@ namespace Produtos.Infra.CrossCutting.IoC
                 x.GetService<IProdutoLog<ProdutoService>>()
                 ));
 
-            services.AddScoped<IProdutoAppService, ProdutoAppService>();
+            services.AddScoped<IProdutoAppService, ProdutoAppService>(x => new ProdutoAppService(
+                x.GetService<IProdutoService>(),
+                x.GetService<IFileService>(),
+                configuration["ApiUrl"]
+                ));
 
             return services;
         }
